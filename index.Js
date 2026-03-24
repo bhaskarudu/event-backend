@@ -3,13 +3,23 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/generate", (req, res) => {
-  const name = req.body.name;
+// Test route
+app.get("/", (req, res) => {
+  res.send("Backend Running ✅");
+});
 
-  // Fake video (demo)
+// Generate API
+app.post("/generate", (req, res) => {
+  const name = req.body.name || "Guest";
+
   const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
 
   res.json({ videoUrl });
 });
 
-app.listen(10000, () => console.log("Server running"));
+// IMPORTANT (Render uses dynamic port)
+const PORT = process.env.PORT || 10000;
+
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
