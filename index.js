@@ -1,25 +1,19 @@
-const express = require("express");
-const app = express();
+const { exec } = require("child_process");
 
-app.use(express.json());
-
-// Test route
-app.get("/", (req, res) => {
-  res.send("Backend Running ✅");
-});
-
-// Generate API
 app.post("/generate", (req, res) => {
   const name = req.body.name || "Guest";
 
-  const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
+  const output = `video-${Date.now()}.mp4`;
 
-  res.json({ videoUrl });
-});
+  const command = `ffmpeg -i template.mp4 -vf "drawtext=text='${name}':x=100:y=100:fontsize=40:fontcolor=white" public/${output}`;
 
-// IMPORTANT (Render uses dynamic port)
-const PORT = process.env.PORT || 10000;
+  exec(command, (err) => {
+    if (err) {
+      return res.json({ videoUrl: "Error" });
+    }
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+    res.json({
+      videoUrl: `https://your-domain/${output}`
+    });
+  });
 });
